@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample_app/Models/selection_bloc.dart';
 
 class SelectionScreen extends StatefulWidget {
   SelectionScreen({Key key}) : super(key: key);
@@ -8,33 +10,50 @@ class SelectionScreen extends StatefulWidget {
 }
 
 class _SelectionScreenState extends State<SelectionScreen> {
+  final myController = TextEditingController();
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(children: [
-        Align(
-          alignment: Alignment(0.5, -0.8),
-          child: Text("User: ", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(-0.6, -0.8),
-          child: Text("Current user #", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(0.5, -0.8),
-          child: RaisedButton(
-              onPressed: () {},
-              child: Text("change user", style: TextStyle(fontSize: 10))),
-        ),
-        Options(),
-        Align(
-          alignment: Alignment(0.6, 0.0),
-          child: RaisedButton(
-              onPressed: () {},
-              child: Text("Submit", style: TextStyle(fontSize: 10))),
-        ),
-      ]),
-    );
+    return Stack(children: [
+      Options(),
+      Align(
+        alignment: Alignment(-0.6, -0.8),
+        child: Row(children: [
+          Text("Current user: ", style: TextStyle(fontSize: 20)),
+          Container(
+              width: 100,
+              child: TextField(controller: myController, cursorWidth: 1.0))
+        ]),
+      ),
+      Align(
+        alignment: Alignment(0.5, -0.8),
+        child: RaisedButton(
+            onPressed: () {
+              print("okay");
+            },
+            child: Text("Subnfgdmit", style: TextStyle(fontSize: 10))),
+      ),
+      Align(
+          alignment: Alignment(-0.6, 0.6),
+          child: Consumer<SelectionBloc>(
+            builder: (context, selection, child) => Text(
+                "Picked " + selection.pickedUser,
+                style: TextStyle(fontSize: 20)),
+          )),
+      Align(
+        alignment: Alignment(0.6, 0.6),
+        child: RaisedButton(
+            onPressed: () {
+              print("okay");
+            },
+            child: Text("Submit", style: TextStyle(fontSize: 10))),
+      ),
+    ]);
   }
 }
 
@@ -48,33 +67,43 @@ class Options extends StatefulWidget {
 class _OptionsState extends State<Options> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return InkWell(
+        child: Container(
       child: Stack(children: [
-        Align(
-          alignment: Alignment(-0.5, -0.6),
-          child: Text("#", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(0.5, -0.6),
-          child: Text("#", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(0, -0.4),
-          child: Text("#", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(-0.5, -0.2),
-          child: Text("#", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(0.5, -0.2),
-          child: Text("#", style: TextStyle(fontSize: 20)),
-        ),
-        Align(
-          alignment: Alignment(-0.6, 0.0),
-          child: Text("Picked #", style: TextStyle(fontSize: 20)),
-        )
+        Option(xAxis: -0.5, yAxis: -0.4, value: "1"),
+        Option(xAxis: 0.5, yAxis: -0.4, value: "2"),
+        Option(xAxis: 0, yAxis: -0.2, value: "3"),
+        Option(xAxis: -0.5, yAxis: 0, value: "4"),
+        Option(xAxis: 0.5, yAxis: 0, value: "5"),
       ]),
-    );
+    ));
+  }
+}
+
+class Option extends StatelessWidget {
+  const Option({Key key, this.xAxis, this.yAxis, this.value}) : super(key: key);
+
+  final double xAxis, yAxis;
+  final String value;
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SelectionBloc>(builder: (context, selection, child) {
+      return Container(
+        child: Align(
+            alignment: Alignment(this.xAxis, this.yAxis),
+            child: GestureDetector(
+                child: Container(
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(25.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                    ),
+                    child: Text(value, style: TextStyle(fontSize: 20))),
+                onTap: () {
+                  selection.pickedUser = this.value;
+                  print("option: " + this.value);
+                })),
+      );
+    });
   }
 }
