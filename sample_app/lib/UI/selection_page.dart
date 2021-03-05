@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/Models/selection_bloc.dart';
+import 'package:sample_app/UI/switch_sections.dart';
 
-class SelectionScreen extends StatefulWidget {
-  SelectionScreen({Key key}) : super(key: key);
-
+class SelectionPage extends StatefulWidget {
+  SelectionPage({Key key}) : super(key: key);
   @override
-  _SelectionScreenState createState() => _SelectionScreenState();
+  _SelectionPageState createState() => _SelectionPageState();
 }
 
-class _SelectionScreenState extends State<SelectionScreen> {
+class _SelectionPageState extends State<SelectionPage> {
   final myController = TextEditingController();
   @override
   void dispose() {
@@ -36,7 +36,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
             onPressed: () {
               print("okay");
             },
-            child: Text("Subnfgdmit", style: TextStyle(fontSize: 10))),
+            child: Text("Change", style: TextStyle(fontSize: 10))),
       ),
       Align(
           alignment: Alignment(-0.6, 0.6),
@@ -53,6 +53,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
             },
             child: Text("Submit", style: TextStyle(fontSize: 10))),
       ),
+      Align(alignment: Alignment(0, 0.8), child: SwitchPage())
     ]);
   }
 }
